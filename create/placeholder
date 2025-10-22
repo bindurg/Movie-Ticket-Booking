@@ -1,1 +1,71 @@
+Create sql/schema.sql. Example MySQL schema:
+-- Movies table
+CREATE TABLE movies (
+  movie_id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  duration_minutes INT,
+  language VARCHAR(50),
+  rating VARCHAR(10),
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+-- Theaters table
+CREATE TABLE theaters (
+  theater_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  location VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Screens (a theater can have multiple screens)
+CREATE TABLE screens (
+  screen_id INT AUTO_INCREMENT PRIMARY KEY,
+  theater_id INT NOT NULL,
+  screen_name VARCHAR(100),
+  seat_capacity INT NOT NULL,
+  FOREIGN KEY (theater_id) REFERENCES theaters(theater_id) ON DELETE CASCADE
+);
+
+-- Shows (movie-screen-time combination)
+CREATE TABLE shows (
+  show_id INT AUTO_INCREMENT PRIMARY KEY,
+  movie_id INT NOT NULL,
+  screen_id INT NOT NULL,
+  show_time DATETIME NOT NULL,
+  price DECIMAL(8,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
+  FOREIGN KEY (screen_id) REFERENCES screens(screen_id) ON DELETE CASCADE
+);
+
+-- Seats (seat definition per screen)
+CREATE TABLE seats (
+  seat_id INT AUTO_INCREMENT PRIMARY KEY,
+  screen_id INT NOT NULL,
+  seat_label VARCHAR(10) NOT NULL, -- e.g. A1, A2
+  seat_type VARCHAR(50) DEFAULT 'standard',
+  FOREIGN KEY (screen_id) REFERENCES screens(screen_id) ON DELETE CASCADE
+);
+
+-- Bookings
+CREATE TABLE bookings (
+  booking_id INT AUTO_INCREMENT PRIMARY KEY,
+  show_id INT NOT NULL,
+  user_name VARCHAR(255),
+  user_email VARCHAR(255),
+  total_amount DECIMAL(10,2),
+  booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('CONFIRMED','CANCELLED','HOLD') DEFAULT 'CONFIRMED',
+  FOREIGN KEY (show_id) REFERENCES shows(show_id) ON DELETE CASCADE
+);
+
+-- Booked seats mapping
+CREATE TABLE booked_seats (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  booking_id INT NOT NULL,
+  seat_id INT NOT NULL,
+  FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+  FOREIGN KEY (seat_id) REFERENCES seats(seat_id) ON DELETE CASCADE,
+  UNIQUE (seat_id, booking_id)
+);
