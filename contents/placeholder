@@ -1,0 +1,37 @@
+### Movie Ticket Booking System using SQL & Python
+ A console/web-backend application in Python that connects to an SQL database to let users view movies, check showtimes, select seats, and purchase/hold tickets — with admin CRUD operations, concurrency-safe bookings, and simple reporting.
+
+## Project overview
+
+This project demonstrates how to build a movie ticket booking system where:
+
+Movies, theaters, and shows are stored in an SQL database.
+
+Seat availability and bookings are tracked reliably.
+
+Python is used for the application layer (CLI, REST API, or both).
+
+Admins can add/update/delete movies and shows.
+
+Bookings are made transactionally (preventing double booking).
+
+## Tech stack
+
+Database: MySQL / PostgreSQL / SQLite (choose). (Examples use MySQL syntax; SQLite requires minor changes.)
+
+Python: 3.10+
+
+## Libraries:
+
+mysql-connector-python or psycopg2 or built-in sqlite3
+
+sqlalchemy (optional — recommended for portability)
+
+Flask or FastAPI (if exposing a REST API)
+
+pytest for tests
+
+python-dotenv for environment variables
+
+Tools: Git, Docker (optional)
+
